@@ -3,33 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UIElements;
+using Unity.VisualScripting;
 
-public class Controls : MonoBehaviour
+public class Controls : Fighter
 {
 
-    
-
-    private float actionTimer;
-
-    [Header("Player Stats")]
-    [SerializeField] private int Health;
-    [SerializeField] private int MaxCharge;
-    [SerializeField] private int CurreCharge;
-    [SerializeField] private bool inAction;
-    [SerializeField] private ActionManager.Action currentAction;
-    private ActionManager.Action nextAction;
-    private ActionManager actionManager;
-    
-
-    
+    //ActionManager _actionManager = GameObject.FindGameObjectWithTag("ActionManager").GetComponent<ActionManager>();
     private void Start()
     {
-        actionManager = GameObject.FindGameObjectWithTag("ActionManager").GetComponent<ActionManager>();
 
-        currentAction = ActionManager.Action.None;
-        
+        _actionManager = GameObject.FindGameObjectWithTag("ActionManager").GetComponent<ActionManager>();
+        SetCurrentAction(ActionManager.Action.None);
 
     }
+
 
     // Update is called once per frame
     void Update()
@@ -38,32 +25,25 @@ public class Controls : MonoBehaviour
         #region Inputs
         if(Input.GetKeyDown(KeyCode.J))
         {   
-            actionManager.updatePlayerAction(ActionManager.Action.Jab);
-
+            _actionManager.updatePlayerAction(ActionManager.Action.Jab);
         }
         if(Input.GetKeyDown(KeyCode.K))
         {
-            actionManager.updatePlayerAction(ActionManager.Action.Feint);
+            _actionManager.updatePlayerAction(ActionManager.Action.Feint);
         }
         if (Input.GetKeyDown(KeyCode.L))
         {
-            actionManager.updatePlayerAction(ActionManager.Action.Guard);
+            _actionManager.updatePlayerAction(ActionManager.Action.Guard);
         }
         if (Input.GetKeyDown(KeyCode.Semicolon))
         {
-            actionManager.updatePlayerAction(ActionManager.Action.Slip);
+            _actionManager.updatePlayerAction(ActionManager.Action.Slip);
         }
         #endregion
     }
     
     
-    #region Getters and Setters
-    public ActionManager.Action GetCurrentAction() { return currentAction;}
-    public void SetCurrentAction(ActionManager.Action action) { currentAction = action;}
-
-    public ActionManager.Action getNextAction() { return nextAction; }
-    public void SetNextAction(ActionManager.Action action) { nextAction = action;}
-    #endregion
+   
 
 
 }

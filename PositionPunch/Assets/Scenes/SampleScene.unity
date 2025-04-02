@@ -363,8 +363,9 @@ GameObject:
   m_Component:
   - component: {fileID: 933584745}
   - component: {fileID: 933584746}
+  - component: {fileID: 933584747}
   m_Layer: 0
-  m_Name: ActionManager
+  m_Name: GameMaster
   m_TagString: ActionManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -403,6 +404,18 @@ MonoBehaviour:
   _maxJabTime: 0
   _maxSlipTime: 0
   uiText: {fileID: 794852520}
+--- !u!114 &933584747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933584744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 976dcc648f5885a4cab15a45f3459e08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -683,6 +696,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5c97e6283ac9cc4b95a0ff947bece19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Health: 0
+  MaxCharge: 0
+  CurrentCharge: 0
+  inAction: 0
+  currentAction: 0
+  _actionManager: {fileID: 933584746}
 --- !u!1 &2033263589
 GameObject:
   m_ObjectHideFlags: 0
@@ -797,6 +816,10 @@ PrefabInstance:
       propertyPath: uiText
       value: 
       objectReference: {fileID: 794852520}
+    - target: {fileID: 678695363023013038, guid: 4d98469449f197744b00f821d1db6c88, type: 3}
+      propertyPath: _actionManager
+      value: 
+      objectReference: {fileID: 933584746}
     - target: {fileID: 1988275335744535759, guid: 4d98469449f197744b00f821d1db6c88, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
