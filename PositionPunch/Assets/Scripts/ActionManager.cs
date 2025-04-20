@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.Contracts;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,6 +13,7 @@ public class ActionManager : MonoBehaviour
     private OpponentScript _opponent;
     [SerializeField] private Action opponentAction;
 
+    
     [Header("Game Stats")]
     [SerializeField] private float _maxGuardTime;
     private float guardTimer;
@@ -21,10 +24,13 @@ public class ActionManager : MonoBehaviour
     [SerializeField] private float _maxSlipTime;
     private float slipTimer;
 
+    
     private string repeatCounterString;
     private int repeatCounter;
     public TextMeshProUGUI uiText;
 
+    [SerializeField] private Animator _playerAnim;
+    [SerializeField] private Animator _opponentAnim;
     /* ARRAY KEY
     *       jab           feint           guard           slip            none
     * jab   [jab jab]     [jab feint]     [jab guard]     [jab slip]      [jab none]
@@ -46,10 +52,10 @@ public class ActionManager : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    [SerializeField] private Dictionary<ExchangeCode, HashSet<Tuple<Action,Action>>> Exchanges;
 
 
-    
+
+
 
     /// <summary>
     /// <para>inputs</para>
@@ -60,7 +66,6 @@ public class ActionManager : MonoBehaviour
     /// </summary>
     public enum Action
     {
-        
         Jab,
         Feint,
         Guard,
@@ -68,41 +73,12 @@ public class ActionManager : MonoBehaviour
         None
     }
     
-    enum ExchangeCode
-    {
-        
-        #region jab codes
-        jj,
-        jf,
-        jg,
-        js,
-        jn,
-        #endregion
-        #region feint codes
-        ff,
-        fg,
-        fs,
-        fn,
-        #endregion
-        #region guard codes
-        gg,
-        gs,
-        gn,
-        #endregion
-        #region slip codes
-        ss,
-        sn,
-        #endregion
-        #region none codes
-        nn
-        #endregion
-        
-    }
+  
 
 
     void Start()
     {
-        InitializeReactionDictionary();
+        
         _playerControl = GameObject.FindGameObjectWithTag("Player").GetComponent<Controls>();
         _opponent = GameObject.FindGameObjectWithTag("Opponent").GetComponent<OpponentScript>();
         repeatCounter = 1;
@@ -113,7 +89,7 @@ public class ActionManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
     public void updatePlayerAction(ActionManager.Action action)
     {
@@ -129,7 +105,7 @@ public class ActionManager : MonoBehaviour
     }
     public void RepeatStringFunction()
     {
-        if (_playerControl.getNextAction() == _playerControl.GetCurrentAction())
+        if (_playerControl.getNextAction() == _playerControl.GetCurrentAction() && _playerControl.getNextAction().ToString()!="Guard")
         {
             repeatCounter++;
             repeatCounterString = " x" + repeatCounter + "!";
@@ -141,87 +117,80 @@ public class ActionManager : MonoBehaviour
         }
     }
     
-    private void InitializeReactionDictionary()
+    public void Exchange()
     {
-        Exchanges = new Dictionary<ExchangeCode, HashSet<Tuple<Action, Action>>> ();
-
-        HashSet<Tuple<Action,Action>> jabjab = new HashSet<Tuple<Action, Action>>();
-        jabjab.Add(Tuple.Create(Action.Jab,Action.Jab));
-        Exchanges.Add(ExchangeCode.jj,jabjab);
-
-
-        HashSet<Tuple<Action, Action>> jabfeint = new HashSet<Tuple<Action, Action>>();
-        jabfeint.Add(Tuple.Create(Action.Jab, Action.Feint));
-        jabfeint.Add(Tuple.Create(Action.Feint, Action.Jab));
-        Exchanges.Add(ExchangeCode.jf, jabfeint);
-
-
-        HashSet<Tuple<Action, Action>> jabguard = new HashSet<Tuple<Action, Action>>();
-        jabfeint.Add(Tuple.Create(Action.Jab, Action.Guard));
-        jabfeint.Add(Tuple.Create(Action.Guard, Action.Jab));
-        Exchanges.Add(ExchangeCode.jg, jabguard);
-
-        HashSet<Tuple<Action, Action>> jabslip = new HashSet<Tuple<Action, Action>>();
-        jabfeint.Add(Tuple.Create(Action.Jab, Action.Slip));
-        jabfeint.Add(Tuple.Create(Action.Slip, Action.Jab));
-        Exchanges.Add(ExchangeCode.js, jabslip);
-
-        HashSet<Tuple<Action, Action>> jabnone = new HashSet<Tuple<Action, Action>>();
-        jabfeint.Add(Tuple.Create(Action.Jab, Action.None));
-        jabfeint.Add(Tuple.Create(Action.None, Action.Jab));
-        Exchanges.Add(ExchangeCode.jn, jabnone);
-
-        HashSet<Tuple<Action, Action>> feintfeint = new HashSet<Tuple<Action, Action>>();
-        jabfeint.Add(Tuple.Create(Action.Feint, Action.Feint));
-        Exchanges.Add(ExchangeCode.ff, feintfeint);
-
-        HashSet<Tuple<Action, Action>> feintguard = new HashSet<Tuple<Action, Action>>();
-        jabfeint.Add(Tuple.Create(Action.Feint, Action.Guard));
-        jabfeint.Add(Tuple.Create(Action.Guard, Action.Feint));
-        Exchanges.Add(ExchangeCode.fg, feintguard);
-
-        HashSet<Tuple<Action, Action>> feintslip = new HashSet<Tuple<Action, Action>>();
-        jabfeint.Add(Tuple.Create(Action.Feint, Action.Slip));
-        jabfeint.Add(Tuple.Create(Action.Slip, Action.Feint));
-        Exchanges.Add(ExchangeCode.fs, feintslip);
-
-        HashSet<Tuple<Action, Action>> feintnone = new HashSet<Tuple<Action, Action>>();
-        jabfeint.Add(Tuple.Create(Action.Feint, Action.None));
-        jabfeint.Add(Tuple.Create(Action.None, Action.Feint));
-        Exchanges.Add(ExchangeCode.fn, feintnone);
-
-        HashSet<Tuple<Action, Action>> guardguard = new HashSet<Tuple<Action, Action>>();
-        jabfeint.Add(Tuple.Create(Action.Guard, Action.Guard));
-        Exchanges.Add(ExchangeCode.gg, guardguard);
-
-        HashSet<Tuple<Action, Action>> guardslip = new HashSet<Tuple<Action, Action>>();
-        jabfeint.Add(Tuple.Create(Action.Slip, Action.Guard));
-        jabfeint.Add(Tuple.Create(Action.Guard, Action.Slip));
-        Exchanges.Add(ExchangeCode.gs, guardslip);
-
-
-        HashSet<Tuple<Action, Action>> guardnone = new HashSet<Tuple<Action, Action>>();
-        jabfeint.Add(Tuple.Create(Action.None, Action.Guard));
-        jabfeint.Add(Tuple.Create(Action.Guard, Action.None));
-        Exchanges.Add(ExchangeCode.gn, guardnone);
-
-        HashSet<Tuple<Action, Action>> slipslip = new HashSet<Tuple<Action, Action>>();
-        jabfeint.Add(Tuple.Create(Action.Slip, Action.Slip));
-        Exchanges.Add(ExchangeCode.ss, slipslip);
-
-        HashSet<Tuple<Action, Action>> slipnone = new HashSet<Tuple<Action, Action>>();
-        jabfeint.Add(Tuple.Create(Action.None, Action.Slip));
-        jabfeint.Add(Tuple.Create(Action.Slip, Action.None));
-        Exchanges.Add(ExchangeCode.sn, slipnone);
-
-        HashSet<Tuple<Action, Action>> nonenone = new HashSet<Tuple<Action, Action>>();
-        jabfeint.Add(Tuple.Create(Action.None, Action.None));
-        Exchanges.Add(ExchangeCode.nn, nonenone);
-
+        if (_playerControl.GetCurrentAction().Equals(Action.Jab))
+        {
+            #region opponent jab
+            if (_opponent.GetCurrentAction().Equals(Action.Jab))
+            {
+                if (_playerControl.GetCharge() > _opponent.GetCharge())
+                {
+                    _opponent.TakeDamage(DamageCalc(_playerControl, true));
+                }
+                else
+                {
+                    _playerControl.TakeDamage(DamageCalc(_opponent, true));
+                }
+            }
+            #endregion
+            if (_opponent.GetCurrentAction().Equals(Action.Feint)|| _opponent.GetCurrentAction().Equals(Action.None))
+            {
+                _opponent.TakeDamage(DamageCalc(_playerControl, true));
+            }
+            if (_opponent.GetCurrentAction().Equals(Action.Guard))
+            {
+                _opponent.IncreaseCharge();
+            }
+            if(_opponent.GetCurrentAction().Equals(Action.Slip))
+            {
+                _playerControl.TakeDamage(DamageCalc(_opponent, true));
+            }
+            
+        }
+        if (_playerControl.GetCurrentAction().Equals(Action.Feint))
+        {
+            if (_opponent.GetCurrentAction().Equals(Action.Jab))
+            {
+                _playerControl.TakeDamage(DamageCalc(_opponent, true));
+            }
+            if (_opponent.GetCurrentAction().Equals(Action.Guard)|| _opponent.GetCurrentAction().Equals(Action.Slip))
+            {
+                _opponent.TakeDamage(DamageCalc(_playerControl,true));
+            }
+            
+        }
+        if (_playerControl.GetCurrentAction().Equals(Action.Guard))
+        {
+            if (_opponent.GetCurrentAction().Equals(Action.Jab))
+            {
+                _playerControl.IncreaseCharge();
+            }
+            if (_opponent.GetCurrentAction().Equals(Action.Feint))
+            {
+                _playerControl.TakeDamage(DamageCalc(_opponent, false));
+            }
+            
+        }
+        if(_playerControl.GetCurrentAction().Equals(Action.Slip))
+        {
+            if (_opponent.GetCurrentAction().Equals(Action.Jab))
+            {
+                _opponent.TakeDamage(DamageCalc(_playerControl, true));
+            }
+            if (_opponent.GetCurrentAction().Equals(Action.Feint))
+            {
+                _playerControl.TakeDamage(DamageCalc(_opponent, false));
+            }
+        }
     }
-
     
-
-
+    private int DamageCalc(Fighter fighter, bool expend)
+    {
+        
+        int damage = 1 + fighter.GetCharge();
+        if (expend) { fighter.SpendCharge(); }
+        return damage;
+    }    
 
 }

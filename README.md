@@ -28,3 +28,4 @@ l - Guard\
 > [!NOTE]
 > Controls will be updated as two player functionality and controller support are implemented.
 
+Animations used are [Basic Boxing/Fighting Animations](https://assetstore.unity.com/packages/3d/animations/basic-boxing-fighting-animations-251206#description).

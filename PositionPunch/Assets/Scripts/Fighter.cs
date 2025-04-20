@@ -6,21 +6,23 @@ public class Fighter : MonoBehaviour
 {
    
     [Header("Stats")]
-    [SerializeField] private int MaxHealth;
-    [SerializeField] private int CurrentHealth;
+    [SerializeField] public int MaxHealth = 10;
+    [SerializeField] public int CurrentHealth = 10;
     [SerializeField] private int MaxCharge;
     [SerializeField] private int CurrentCharge;
     [SerializeField] private bool inAction;
     [SerializeField] private ActionManager.Action currentAction;
     private ActionManager.Action nextAction;
     public ActionManager _actionManager;
+    [SerializeField] private Animator _animator;
 
 
 
-
-    private void Start()
+    protected virtual void Start()
     {
+        
         _actionManager = GameObject.FindGameObjectWithTag("ActionManager").GetComponent<ActionManager>();
+        SetCurrentAction(ActionManager.Action.None);
     }
 
     // Update is called once per frame
@@ -30,22 +32,33 @@ public class Fighter : MonoBehaviour
     }
     public void IncreaseCharge() 
     {
+        Debug.Log(gameObject.name + " Increased Charge!");
         if (CurrentCharge<MaxCharge)
         {
             CurrentCharge++;
         }
     }
-    public void TakeDamage(int damage)
-    {
-        CurrentHealth -= damage;
-    }
+    
     #region Getters and Setters
     public ActionManager.Action GetCurrentAction() { return currentAction; }
     public void SetCurrentAction(ActionManager.Action action) { currentAction = action; }
 
     public ActionManager.Action getNextAction() { return nextAction; }
     public void SetNextAction(ActionManager.Action action) { nextAction = action; }
-    public int GetHealth() { return CurrentHealth; }
+    public void TakeDamage(int damage)
+    {
+
+        CurrentHealth -= damage;
+        Debug.Log(gameObject.name + " Took Damage!" + " Current health: " + CurrentHealth);
+        DeathCheck();
+    }
+    public void DeathCheck()
+    {
+        if (CurrentHealth <= 0)
+        {
+            Debug.Log(gameObject.name + " is dead!");
+        }
+    }
     public int GetCharge() { return CurrentCharge; }
     public void AddCharge() { CurrentCharge++; }
     public void SpendCharge() { CurrentCharge = 0; }

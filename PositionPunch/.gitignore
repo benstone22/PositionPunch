@@ -72,3 +72,11 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Ignore animation files
+*.anim
+*.fbx
+*.fbx.meta
+*Features.meta
+*Animations.meta
+*Mesh.meta
