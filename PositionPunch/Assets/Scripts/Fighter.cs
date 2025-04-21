@@ -15,12 +15,12 @@ public class Fighter : MonoBehaviour
     private ActionManager.Action nextAction;
     public ActionManager _actionManager;
     [SerializeField] private Animator _animator;
-
+    private Transform resetTransform;
 
 
     protected virtual void Start()
     {
-        
+        resetTransform = GetComponentInChildren<Transform>();
         _actionManager = GameObject.FindGameObjectWithTag("ActionManager").GetComponent<ActionManager>();
         SetCurrentAction(ActionManager.Action.None);
     }
@@ -38,6 +38,11 @@ public class Fighter : MonoBehaviour
             CurrentCharge++;
         }
     }
+    public void ResetPosition()
+    {
+        GetComponentInChildren  <Transform>().SetPositionAndRotation(resetTransform.position,resetTransform.rotation);
+    }
+
     
     #region Getters and Setters
     public ActionManager.Action GetCurrentAction() { return currentAction; }

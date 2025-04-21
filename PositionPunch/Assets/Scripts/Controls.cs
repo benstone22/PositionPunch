@@ -36,6 +36,7 @@ public class Controls : Fighter
             _actionManager.updatePlayerAction(ActionManager.Action.Feint);
             _actionManager.Exchange();
             _anim.SetTrigger("Feint");
+            
 
         }
         if (Input.GetKey(KeyCode.L))

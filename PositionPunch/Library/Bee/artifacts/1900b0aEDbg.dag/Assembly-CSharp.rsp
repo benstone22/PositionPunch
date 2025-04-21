@@ -354,6 +354,8 @@
 -analyzer:"C:/Users/Owner/Desktop/Unity Versions/2022.3.20f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"C:/Users/Owner/Desktop/Unity Versions/2022.3.20f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Animations/Behaviors/FeintBehvaior.cs"
+"Assets/ChargeBehavior.cs"
+"Assets/IdleBehavior.cs"
 "Assets/Scripts/ActionManager.cs"
 "Assets/Scripts/Controls.cs"
 "Assets/Scripts/Fighter.cs"
