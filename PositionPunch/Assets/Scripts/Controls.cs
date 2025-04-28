@@ -8,7 +8,9 @@ using Unity.VisualScripting;
 public class Controls : Fighter
 {
 
-    private Animator _anim;
+    
+    [SerializeField] private Animator _anim;
+    private bool guardBool;
     //ActionManager _actionManager = GameObject.FindGameObjectWithTag("ActionManager").GetComponent<ActionManager>();
     protected override void Start()
     {
@@ -23,33 +25,40 @@ public class Controls : Fighter
     // Update is called once per frame
     void Update()
     {
-        _anim.SetBool("Guard", Input.GetKeyDown(KeyCode.L));
+        guardBool = Input.GetKey(KeyCode.L) && !(Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(KeyCode.K) || Input.GetKeyDown(KeyCode.Semicolon));
+        
         #region Inputs
+        
+        if (guardBool)
+        {
+            _actionManager.updatePlayerAction(ActionManager.Action.Guard);
+            _anim.SetBool("Guard", guardBool);
+            _actionManager.Exchange();
+
+        }
+        else _anim.SetBool("Guard", guardBool);
+
         if (Input.GetKeyDown(KeyCode.J))
         {   
             _actionManager.updatePlayerAction(ActionManager.Action.Jab);
+            _anim.SetBool("Jab", true);
             _actionManager.Exchange();
-            _anim.SetTrigger("Jab");
+            
         }
         if(Input.GetKeyDown(KeyCode.K))
         {
             _actionManager.updatePlayerAction(ActionManager.Action.Feint);
+            _anim.SetBool("Feint", true);
             _actionManager.Exchange();
-            _anim.SetTrigger("Feint");
             
-
         }
-        if (Input.GetKey(KeyCode.L))
-        {
-            _actionManager.updatePlayerAction(ActionManager.Action.Guard);
-            _actionManager.Exchange();
-            _anim.SetTrigger("Guard");
-        }
+        
         if (Input.GetKeyDown(KeyCode.Semicolon))
         {
             _actionManager.updatePlayerAction(ActionManager.Action.Slip);
+            _anim.SetBool("Slip", true);
             _actionManager.Exchange();
-            _anim.SetTrigger("Slip");
+
         }
         #endregion
     }

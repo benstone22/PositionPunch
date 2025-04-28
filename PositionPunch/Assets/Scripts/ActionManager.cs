@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
+using System.Runtime.CompilerServices;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -74,7 +75,8 @@ public class ActionManager : MonoBehaviour
     }
     
   
-
+    public Controls GetPlayer() { return _playerControl; }
+    public OpponentScript GetOpponent() { return _opponent; }
 
     void Start()
     {
@@ -119,78 +121,152 @@ public class ActionManager : MonoBehaviour
     
     public void Exchange()
     {
-        if (_playerControl.GetCurrentAction().Equals(Action.Jab))
+        if (PlayerIsJabbing())
         {
             #region opponent jab
-            if (_opponent.GetCurrentAction().Equals(Action.Jab))
+            if (OpponentIsJabbing())
             {
                 if (_playerControl.GetCharge() > _opponent.GetCharge())
                 {
-                    _opponent.TakeDamage(DamageCalc(_playerControl, true));
+                    PlayerWinsExchange();
                 }
                 else
                 {
-                    _playerControl.TakeDamage(DamageCalc(_opponent, true));
+                    OpponentWinsExchange();
+
                 }
             }
             #endregion
-            if (_opponent.GetCurrentAction().Equals(Action.Feint)|| _opponent.GetCurrentAction().Equals(Action.None))
+            if (OpponentIsFeinting() || PlayerIsIdle())
             {
-                _opponent.TakeDamage(DamageCalc(_playerControl, true));
+                PlayerWinsExchange();
             }
-            if (_opponent.GetCurrentAction().Equals(Action.Guard))
+            if (OpponentIsGuarding())
             {
                 _opponent.IncreaseCharge();
+                _opponentAnim.SetBool("Success", true);
             }
-            if(_opponent.GetCurrentAction().Equals(Action.Slip))
+            if(OpponentIsSlipping())
             {
-                _playerControl.TakeDamage(DamageCalc(_opponent, true));
+                OpponentWinsExchange();
             }
             
         }
-        if (_playerControl.GetCurrentAction().Equals(Action.Feint))
+        if (PlayerIsFeinting())
         {
-            if (_opponent.GetCurrentAction().Equals(Action.Jab))
+            if (OpponentIsJabbing())
             {
-                _playerControl.TakeDamage(DamageCalc(_opponent, true));
+                OpponentWinsExchange();
             }
-            if (_opponent.GetCurrentAction().Equals(Action.Guard)|| _opponent.GetCurrentAction().Equals(Action.Slip))
+            if (OpponentIsGuarding() || OpponentIsSlipping())
             {
-                _opponent.TakeDamage(DamageCalc(_playerControl,true));
+                PlayerWinsExchange();
             }
             
         }
-        if (_playerControl.GetCurrentAction().Equals(Action.Guard))
+        if (PlayerIsGuarding())
         {
-            if (_opponent.GetCurrentAction().Equals(Action.Jab))
+            if (OpponentIsJabbing())
             {
                 _playerControl.IncreaseCharge();
+                _playerAnim.SetBool("Success", true);
             }
-            if (_opponent.GetCurrentAction().Equals(Action.Feint))
+            if (OpponentIsFeinting())
             {
-                _playerControl.TakeDamage(DamageCalc(_opponent, false));
+                OpponentWinsExchange();
+
             }
             
         }
-        if(_playerControl.GetCurrentAction().Equals(Action.Slip))
+        if(PlayerIsSlipping())
         {
-            if (_opponent.GetCurrentAction().Equals(Action.Jab))
+            if (OpponentIsJabbing())
             {
-                _opponent.TakeDamage(DamageCalc(_playerControl, true));
+                PlayerWinsExchange();
             }
-            if (_opponent.GetCurrentAction().Equals(Action.Feint))
+            if (OpponentIsFeinting())
             {
-                _playerControl.TakeDamage(DamageCalc(_opponent, false));
+                OpponentWinsExchange();
+            }
+        }
+        if(PlayerIsIdle())
+        {
+            if (OpponentIsJabbing())
+            {
+                OpponentWinsExchange();
             }
         }
     }
     
-    private int DamageCalc(Fighter fighter, bool expend)
+    
+    
+    
+    private void PlayerWinsExchange()
     {
-        
-        int damage = 1 + fighter.GetCharge();
-        if (expend) { fighter.SpendCharge(); }
-        return damage;
-    }    
-
+        _playerAnim.SetBool("Success", true);
+        _opponentAnim.SetBool("Fail", true);
+        _opponent.TakeDamage(_playerControl);
+    }
+    private void OpponentWinsExchange()
+    {
+        _opponentAnim.SetBool("Success", true);
+        _playerAnim.SetBool("Fail", true);
+        _playerControl.TakeDamage(_opponent);
+    }
+    #region State Machine Getters
+    #region Player
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool PlayerIsJabbing()
+    {
+        return _playerAnim.GetBool("Jab");
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool PlayerIsFeinting()
+    {
+        return _playerAnim.GetBool("Feint");
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool PlayerIsGuarding()
+    {
+        return _playerAnim.GetBool("Guard");
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool PlayerIsSlipping()
+    {
+        return _playerAnim.GetBool("Slip");
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool PlayerIsIdle()
+    {
+        return _playerAnim.GetBool("Idle");
+    }
+    #endregion
+    #region Opponent 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool OpponentIsJabbing()
+    {
+        return _opponentAnim.GetBool("Jab");
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool OpponentIsFeinting()
+    {
+        return _opponentAnim.GetBool("Feint");
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool OpponentIsGuarding()
+    {
+        return _opponentAnim.GetBool("Guard");
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool OpponentIsSlipping()
+    {
+        return _opponentAnim.GetBool("Slip");
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool OpponentIsIdle()
+    {
+        return _opponentAnim.GetBool("Idle");
+    }
+    #endregion
+    #endregion
 }

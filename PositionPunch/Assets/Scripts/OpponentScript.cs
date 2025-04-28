@@ -5,18 +5,25 @@ using UnityEngine;
 
 public class OpponentScript : Fighter
 {
-    // Start is called before the first frame update
-    List<List<ActionManager.Action>> combos;
 
+    [SerializeField] private Animator _anim;
+    public float timer;
     protected override void Start()
     {
         base.Start();
+        timer = 5f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        timer-=Time.deltaTime;
+        if (timer < 0)
+        {
+            timer = 5;
+            _anim.SetBool("Jab", true);
+            _actionManager.Exchange();
+        }
     }
     
 }

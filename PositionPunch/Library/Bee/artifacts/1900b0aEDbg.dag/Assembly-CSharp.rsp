@@ -355,12 +355,16 @@
 -analyzer:"C:/Users/Owner/Desktop/Unity Versions/2022.3.20f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Animations/Behaviors/FeintBehvaior.cs"
 "Assets/ChargeBehavior.cs"
+"Assets/ExitBehavior.cs"
+"Assets/GuardBehaviour.cs"
 "Assets/IdleBehavior.cs"
+"Assets/JabBehaviour.cs"
 "Assets/Scripts/ActionManager.cs"
 "Assets/Scripts/Controls.cs"
 "Assets/Scripts/Fighter.cs"
-"Assets/Scripts/HealthManager.cs"
 "Assets/Scripts/OpponentScript.cs"
+"Assets/Scripts/UIManager.cs"
+"Assets/SetUp.cs"
 -langversion:9.0
 
 /deterministic

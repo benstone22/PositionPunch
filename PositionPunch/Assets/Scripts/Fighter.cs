@@ -8,20 +8,22 @@ public class Fighter : MonoBehaviour
     [Header("Stats")]
     [SerializeField] public int MaxHealth = 10;
     [SerializeField] public int CurrentHealth = 10;
-    [SerializeField] private int MaxCharge;
-    [SerializeField] private int CurrentCharge;
+    [SerializeField] public int MaxCharge;
+    [SerializeField] public int CurrentCharge;
     [SerializeField] private bool inAction;
     [SerializeField] private ActionManager.Action currentAction;
     private ActionManager.Action nextAction;
     public ActionManager _actionManager;
-    [SerializeField] private Animator _animator;
     private Transform resetTransform;
+    
+
 
 
     protected virtual void Start()
     {
         resetTransform = GetComponentInChildren<Transform>();
         _actionManager = GameObject.FindGameObjectWithTag("ActionManager").GetComponent<ActionManager>();
+        
         SetCurrentAction(ActionManager.Action.None);
     }
 
@@ -50,11 +52,16 @@ public class Fighter : MonoBehaviour
 
     public ActionManager.Action getNextAction() { return nextAction; }
     public void SetNextAction(ActionManager.Action action) { nextAction = action; }
-    public void TakeDamage(int damage)
+   
+    public void TakeDamage(Fighter fighter)
     {
 
-        CurrentHealth -= damage;
+        CurrentHealth -= 1 + fighter.GetCharge();
+        
+        fighter.SpendCharge();
+
         Debug.Log(gameObject.name + " Took Damage!" + " Current health: " + CurrentHealth);
+
         DeathCheck();
     }
     public void DeathCheck()
