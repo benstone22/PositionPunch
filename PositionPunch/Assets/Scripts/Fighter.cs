@@ -17,7 +17,7 @@ public class Fighter : MonoBehaviour
     public ActionManager _actionManager;
     private Transform resetTransform;
     public Animator anim;
-    protected Tmpro
+
 
     [SerializeField] protected bool isJabbing;
     [SerializeField] protected float jabDuration;
