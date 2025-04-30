@@ -28,4 +28,8 @@ l - Guard\
 > [!NOTE]
 > Controls will be updated as two player functionality and controller support are implemented.
 
+
+# Why Did I Make This?
+Position Punch is a combination of my love of martial arts and programming. The goal of Position Punch is to make a foundation of a fighting game with code that is optimized code and most importantly: healthy. 
+
 Animations used are [Basic Boxing/Fighting Animations](https://assetstore.unity.com/packages/3d/animations/basic-boxing-fighting-animations-251206#description).
