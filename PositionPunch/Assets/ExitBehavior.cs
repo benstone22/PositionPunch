@@ -19,8 +19,8 @@ public class ExitBehavior : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.applyRootMotion=true;
-        animator.SetBool("Success",false);
+
+        animator.SetBool("Success", false);
         animator.SetBool("Fail", false);
         animator.SetBool("Jab", false);
         animator.SetBool("Feint", false);

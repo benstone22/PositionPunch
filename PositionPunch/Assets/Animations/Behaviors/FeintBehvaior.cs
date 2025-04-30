@@ -10,16 +10,16 @@ public class FeintBehvaior : StateMachineBehaviour
     {
 
         _fighter = animator.GetComponentInParent<Fighter>();
-        animator.applyRootMotion=false;
+        animator.applyRootMotion = false;
     }
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
-        
+
         animator.SetBool("Feint", false);
         _fighter = animator.GetComponentInParent<Fighter>();
-        _fighter.ResetPosition();
         
+
     }
 
 }

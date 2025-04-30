@@ -1,20 +1,15 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.Contracts;
+
 using System.Runtime.CompilerServices;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ActionManager : MonoBehaviour
 {
-    private Controls _playerControl;
-    private OpponentScript _opponent;
+    private static Controls _playerControl;
+    private static OpponentScript _opponent;
     [SerializeField] private Action opponentAction;
 
-    
+
     [Header("Game Stats")]
     [SerializeField] private float _maxGuardTime;
     private float guardTimer;
@@ -25,7 +20,7 @@ public class ActionManager : MonoBehaviour
     [SerializeField] private float _maxSlipTime;
     private float slipTimer;
 
-    
+
     private string repeatCounterString;
     private int repeatCounter;
     public TextMeshProUGUI uiText;
@@ -73,14 +68,14 @@ public class ActionManager : MonoBehaviour
         Slip,
         None
     }
-    
-  
-    public Controls GetPlayer() { return _playerControl; }
-    public OpponentScript GetOpponent() { return _opponent; }
+
+
+    public static Controls GetPlayer() { return _playerControl; }
+    public static OpponentScript GetOpponent() { return _opponent; }
 
     void Start()
     {
-        
+
         _playerControl = GameObject.FindGameObjectWithTag("Player").GetComponent<Controls>();
         _opponent = GameObject.FindGameObjectWithTag("Opponent").GetComponent<OpponentScript>();
         repeatCounter = 1;
@@ -91,23 +86,29 @@ public class ActionManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-    }
-    public void updatePlayerAction(ActionManager.Action action)
-    {
-        _playerControl.SetNextAction(action);
-        RepeatStringFunction();
-        _playerControl.SetCurrentAction(action);
-        UpdateUI();
-    }
+        bool exchangeBool = !((_playerAnim.parameters.Equals(_opponentAnim.parameters) && (PlayerIsGuarding() || PlayerIsIdle()) || (PlayerIsIdle() && OpponentIsGuarding() || PlayerIsGuarding() && OpponentIsIdle())));
+        if (exchangeBool)
+        {
+            Exchange();
+        }
 
-    private void UpdateUI() //TODO: Refactor into UI Manager
-    {
-        uiText.text = (_playerControl.getNextAction().ToString()) + repeatCounterString;
     }
+    //public void updatePlayerAction(ActionManager.Action action)
+    //{
+    //    _playerControl.SetNextAction(action);
+    //    RepeatStringFunction();
+    //    _playerControl.SetCurrentAction(action);
+    //    UpdateUI();
+    //}
+
+    //private void UpdateUI() //TODO: Refactor into UI Manager
+    //{
+    //    uiText.text = (_playerControl.getNextAction().ToString()) + repeatCounterString;
+    //}
+    //}
     public void RepeatStringFunction()
     {
-        if (_playerControl.getNextAction() == _playerControl.GetCurrentAction() && _playerControl.getNextAction().ToString()!="Guard")
+        if (_playerControl.getNextAction() == _playerControl.GetCurrentAction() && _playerControl.getNextAction().ToString() != "Guard")
         {
             repeatCounter++;
             repeatCounterString = " x" + repeatCounter + "!";
@@ -118,7 +119,7 @@ public class ActionManager : MonoBehaviour
             repeatCounterString = "!";
         }
     }
-    
+
     public void Exchange()
     {
         if (PlayerIsJabbing())
@@ -129,89 +130,100 @@ public class ActionManager : MonoBehaviour
                 if (_playerControl.GetCharge() > _opponent.GetCharge())
                 {
                     PlayerWinsExchange();
+                    return;
                 }
                 else
                 {
                     OpponentWinsExchange();
-
+                    return;
                 }
             }
             #endregion
             if (OpponentIsFeinting() || PlayerIsIdle())
             {
                 PlayerWinsExchange();
+                return;
             }
             if (OpponentIsGuarding())
             {
-                _opponent.IncreaseCharge();
+
                 _opponentAnim.SetBool("Success", true);
+                return;
             }
-            if(OpponentIsSlipping())
+            if (OpponentIsSlipping())
             {
                 OpponentWinsExchange();
+                return;
             }
-            
+
         }
         if (PlayerIsFeinting())
         {
             if (OpponentIsJabbing())
             {
                 OpponentWinsExchange();
+                return;
             }
             if (OpponentIsGuarding() || OpponentIsSlipping())
             {
                 PlayerWinsExchange();
+                return;
             }
-            
+
         }
         if (PlayerIsGuarding())
         {
             if (OpponentIsJabbing())
             {
-                _playerControl.IncreaseCharge();
                 _playerAnim.SetBool("Success", true);
+                return;
             }
             if (OpponentIsFeinting())
             {
                 OpponentWinsExchange();
+                return;
 
             }
-            
+
         }
-        if(PlayerIsSlipping())
+        if (PlayerIsSlipping())
         {
             if (OpponentIsJabbing())
             {
                 PlayerWinsExchange();
+                return;
             }
             if (OpponentIsFeinting())
             {
                 OpponentWinsExchange();
+                return;
             }
         }
-        if(PlayerIsIdle())
+        if (PlayerIsIdle())
         {
             if (OpponentIsJabbing())
             {
                 OpponentWinsExchange();
+                return;
             }
         }
+        return;
     }
-    
-    
-    
-    
+
+
+
+
     private void PlayerWinsExchange()
     {
         _playerAnim.SetBool("Success", true);
         _opponentAnim.SetBool("Fail", true);
-        _opponent.TakeDamage(_playerControl);
+
     }
     private void OpponentWinsExchange()
     {
         _opponentAnim.SetBool("Success", true);
         _playerAnim.SetBool("Fail", true);
-        _playerControl.TakeDamage(_opponent);
+
     }
     #region State Machine Getters
     #region Player

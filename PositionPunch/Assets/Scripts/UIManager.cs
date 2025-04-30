@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private OpponentScript _opponent;
     [SerializeField] private TextMeshProUGUI playerUI;
     [SerializeField] private TextMeshProUGUI enemyUI;
-    
+
     private string playerHealth;
     private string playerCharge;
 
@@ -26,7 +26,7 @@ public class UIManager : MonoBehaviour
         enemyHealth = "e";
         enemyCharge = "e";
         playerCharge = "e";
-        
+
         UpdateUIStrings();
     }
 
@@ -37,6 +37,14 @@ public class UIManager : MonoBehaviour
         UpdateUIStrings();
         playerUI.text = playerHealth + "\n" + playerCharge;
         enemyUI.text = enemyHealth + "\n" + enemyCharge;
+        if (_player.CurrentHealth<= 0)
+        {
+            playerUI.text = "You died";
+        }
+        if (_opponent.CurrentHealth<=0)
+        {
+            enemyUI.text = "I died";
+        }
     }
 
     public void UpdateUIStrings()
@@ -54,7 +62,7 @@ public class UIManager : MonoBehaviour
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void UpdatePlayerChargeString()
     {
-        playerCharge = _player.CurrentCharge+" / "+ _player.MaxCharge;
+        playerCharge = _player.CurrentCharge + " / " + _player.MaxCharge;
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void UpdateEnemyHealthString()
@@ -64,7 +72,7 @@ public class UIManager : MonoBehaviour
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void UpdateEnemyChargeString()
     {
-        enemyCharge = _opponent.CurrentCharge+ " / " + _opponent.MaxCharge;
+        enemyCharge = _opponent.CurrentCharge + " / " + _opponent.MaxCharge;
     }
 
 }

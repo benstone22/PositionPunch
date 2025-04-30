@@ -357,6 +357,7 @@
 "Assets/ChargeBehavior.cs"
 "Assets/ExitBehavior.cs"
 "Assets/GuardBehaviour.cs"
+"Assets/HurtBehaviour.cs"
 "Assets/IdleBehavior.cs"
 "Assets/JabBehaviour.cs"
 "Assets/Scripts/ActionManager.cs"
