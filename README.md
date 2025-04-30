@@ -35,10 +35,10 @@ l - Guard\
 > As a design and technical desicion both the AI opponent and player have the same moveset. so they both share the Fighter base class.
 
 ## Fighter Class
-Both Opponent and player inherit from this class. It is in charge of the stats of fighters like health and charge as well as where the moves come from
+Both Opponent and player inherit from this class. It is in charge of the stats of fighters like health and charge as well as where the moves come from.
 
 ## Action Manager
-The action manager is in charge of what happens when fighters do a move. in code, the visuals happen in the State Machine
+The action manager is in charge of what happens when fighters do a move. in code, the visuals happen in the State Machine.
 
 ## State Machine
 The State Machine is responsible for the transitions animations based off of outcomes from the Action Manager as well as handling damage application. Transitions happens based off of Success and Fail bools that are used by the action manager.
